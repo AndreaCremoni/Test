@@ -152,7 +152,7 @@ const articles = Array.from(document.querySelectorAll('.article-card'));
 // Collapse timeout ID for debouncing
 let collapseTimeoutId = null;
 
-// 2. Interactive "Peak" Magnifying Hover Effect on Sibling Lines
+// 2. Interactive "Peak" Magnifying Hover Effect on Sibling Lines with 800ms delay
 lines.forEach((line, index) => {
   line.addEventListener('mouseenter', () => {
     // Clear any pending collapse
@@ -193,8 +193,8 @@ lines.forEach((line, index) => {
 
 // 3. Continuous Scroll Sync (Intersection Observer)
 const observerOptions = {
-  root: articleArea, // Observe intersection relative to the scrolling container
-  rootMargin: '-30% 0px -50% 0px', // Trigger focus near the upper middle of the container
+  root: articleArea,
+  rootMargin: '-30% 0px -50% 0px',
   threshold: 0
 };
 
