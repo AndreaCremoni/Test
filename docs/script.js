@@ -210,15 +210,17 @@ function setupTimelineInteractions() {
     });
   });
 
-  // 3. Collapsible Articles
-  articles.forEach((card, index) => {
-    card.addEventListener('click', () => {
+  // 3. Collapsible Articles - Click Header to Toggle
+  articles.forEach((card) => {
+    const header = card.querySelector('.article-card-header');
+    header.addEventListener('click', (e) => {
+      e.stopPropagation();
       card.classList.toggle('expanded');
     });
   });
 
   // 4. Mobile Timeline Item Clicks
-  mobileItems.forEach((item, index) => {
+  mobileItems.forEach((item) => {
     item.addEventListener('click', () => {
       const targetId = item.getAttribute('data-target');
       const targetArticle = document.getElementById(targetId);
