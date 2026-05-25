@@ -3,19 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Printed Book - Chronological Journal</title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <title>Il Post - The Printed Book</title>
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <header class="top-header">
-    <h1 class="header-title">The Printed Book</h1>
-    <div class="header-filters">
+    <h1 class="header-title">Il Post</h1>
+  </header>
+
+  <div class="subheader">
+    <div class="subheader-filters">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="technology">Technology</button>
       <button class="filter-btn" data-filter="cultural">Cultural Impact</button>
       <button class="filter-btn" data-filter="business">Business</button>
     </div>
-  </header>
+  </div>
 
   <div class="main-content">
     <div class="sidebar">
@@ -34,6 +37,65 @@
     </main>
   </div>
 
-  <script src="script.js?v=2"></script>
+  <!-- Home View (hidden by default) -->
+  <div class="home-view" id="home-view" style="display: none;">
+    <button class="back-button" id="back-button">← Back to Timeline</button>
+    
+    <div class="newspaper-layout">
+      <div class="featured-article">
+        <div class="featured-placeholder"></div>
+        <div class="featured-text">
+          <div class="featured-headline"></div>
+          <div class="featured-description"></div>
+        </div>
+      </div>
+
+      <div class="grid-articles">
+        <div class="grid-item large">
+          <div class="article-image"></div>
+          <div class="article-headline"></div>
+          <div class="article-snippet"></div>
+        </div>
+
+        <div class="grid-item">
+          <div class="article-image"></div>
+          <div class="article-headline"></div>
+          <div class="article-snippet"></div>
+        </div>
+
+        <div class="grid-item">
+          <div class="article-image"></div>
+          <div class="article-headline"></div>
+          <div class="article-snippet"></div>
+        </div>
+
+        <div class="grid-item">
+          <div class="article-image"></div>
+          <div class="article-headline"></div>
+          <div class="article-snippet"></div>
+        </div>
+
+        <div class="grid-item">
+          <div class="article-image"></div>
+          <div class="article-headline"></div>
+          <div class="article-snippet"></div>
+        </div>
+
+        <div class="grid-item large">
+          <div class="article-image"></div>
+          <div class="article-headline"></div>
+          <div class="article-snippet"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-ads">
+        <div class="ad-block"></div>
+        <div class="ad-block"></div>
+        <div class="ad-block"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=3"></script>
 </body>
 </html>
