@@ -100,15 +100,18 @@ const bookHistoryEvents = [
 
 const timelineBar = document.getElementById('timeline-bar');
 const articleArea = document.getElementById('article-area');
-const headerTitle = document.querySelector('.header-title');
+const mobileTimeline = document.getElementById('mobile-timeline');
+const headerLogo = document.querySelector('.header-logo');
 const mainContent = document.querySelector('.main-content');
 const homeView = document.getElementById('home-view');
 const backButton = document.getElementById('back-button');
+const subheader = document.getElementById('subheader');
 
 // 1. Render Elements Dynamically
 function renderLayout() {
   timelineBar.innerHTML = '';
   articleArea.innerHTML = '';
+  mobileTimeline.innerHTML = '';
 
   bookHistoryEvents.forEach((evt) => {
     // Render timeline line
@@ -117,7 +120,6 @@ function renderLayout() {
     line.setAttribute('data-target', evt.id);
     line.setAttribute('data-tags', evt.tags.join(' '));
     
-    // Inject label inside line
     line.innerHTML = `
       <div class="label">
         <span class="label-date">${evt.date}</span>
@@ -126,24 +128,39 @@ function renderLayout() {
     `;
     timelineBar.appendChild(line);
 
-    // Render article card
+    // Render collapsible article card
     const card = document.createElement('article');
     card.className = 'article-card';
     card.id = evt.id;
     card.setAttribute('data-tags', evt.tags.join(' '));
     
-    // Generate tag badges
-    const tagBadges = evt.tags.map(t => `<span class="card-tag">${t}</span>`).join(' ');
+    const tagBadges = evt.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
 
     card.innerHTML = `
-      <div class="card-meta">
-        <span>${evt.date}</span>
-        <div class="card-tags-row">${tagBadges}</div>
+      <div class="article-card-header">
+        <h2>${evt.title}</h2>
+        <span class="article-toggle">▼</span>
       </div>
-      <h2>${evt.title}</h2>
-      <p>${evt.content}</p>
+      <div class="article-card-content">
+        <div class="card-meta">
+          <span>${evt.date}</span>
+          ${tagBadges}
+        </div>
+        <p>${evt.content}</p>
+      </div>
     `;
     articleArea.appendChild(card);
+
+    // Render mobile timeline item
+    const mobileItem = document.createElement('div');
+    mobileItem.className = 'mobile-timeline-item';
+    mobileItem.setAttribute('data-target', evt.id);
+    mobileItem.setAttribute('data-tags', evt.tags.join(' '));
+    mobileItem.innerHTML = `
+      <div class="mobile-timeline-date">${evt.date}</div>
+      <div class="mobile-timeline-title">${evt.summary}</div>
+    `;
+    mobileTimeline.appendChild(mobileItem);
   });
 
   setupTimelineInteractions();
@@ -155,6 +172,7 @@ renderLayout();
 function setupTimelineInteractions() {
   const lines = Array.from(document.querySelectorAll('.timeline-line'));
   const articles = Array.from(document.querySelectorAll('.article-card'));
+  const mobileItems = Array.from(document.querySelectorAll('.mobile-timeline-item'));
 
   let collapseTimeoutId = null;
 
@@ -192,7 +210,30 @@ function setupTimelineInteractions() {
     });
   });
 
-  // 3. Continuous Scroll Sync
+  // 3. Collapsible Articles
+  articles.forEach((card, index) => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('expanded');
+    });
+  });
+
+  // 4. Mobile Timeline Item Clicks
+  mobileItems.forEach((item, index) => {
+    item.addEventListener('click', () => {
+      const targetId = item.getAttribute('data-target');
+      const targetArticle = document.getElementById(targetId);
+      
+      mobileItems.forEach(mi => mi.classList.remove('active'));
+      item.classList.add('active');
+      
+      if (targetArticle) {
+        targetArticle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetArticle.classList.add('expanded');
+      }
+    });
+  });
+
+  // 5. Continuous Scroll Sync
   const observerOptions = {
     root: articleArea,
     rootMargin: '-30% 0px -50% 0px',
@@ -211,6 +252,14 @@ function setupTimelineInteractions() {
             line.classList.remove('active');
           }
         });
+
+        mobileItems.forEach(item => {
+          if (item.getAttribute('data-target') === activeId) {
+            item.classList.add('active');
+          } else {
+            item.classList.remove('active');
+          }
+        });
       }
     });
   }, observerOptions);
@@ -218,7 +267,7 @@ function setupTimelineInteractions() {
   articles.forEach(article => observer.observe(article));
 }
 
-// 4. Filtering System
+// 6. Filtering System
 const filterButtons = document.querySelectorAll('.filter-btn');
 
 filterButtons.forEach(btn => {
@@ -229,16 +278,19 @@ filterButtons.forEach(btn => {
     const filterVal = btn.getAttribute('data-filter');
     const lines = Array.from(document.querySelectorAll('.timeline-line'));
     const articles = Array.from(document.querySelectorAll('.article-card'));
+    const mobileItems = Array.from(document.querySelectorAll('.mobile-timeline-item'));
 
     let firstVisibleArticle = null;
 
     articles.forEach((art, index) => {
       const artTags = art.getAttribute('data-tags').split(' ');
       const correspondingLine = lines[index];
+      const correspondingMobile = mobileItems[index];
 
       if (filterVal === 'all' || artTags.includes(filterVal)) {
         art.classList.remove('filtered-out');
         correspondingLine.classList.remove('filtered-out');
+        correspondingMobile.style.display = 'block';
         
         if (!firstVisibleArticle) {
           firstVisibleArticle = art;
@@ -246,6 +298,7 @@ filterButtons.forEach(btn => {
       } else {
         art.classList.add('filtered-out');
         correspondingLine.classList.add('filtered-out');
+        correspondingMobile.style.display = 'none';
       }
     });
 
@@ -255,13 +308,15 @@ filterButtons.forEach(btn => {
   });
 });
 
-// 5. Navigation between views
-headerTitle.addEventListener('click', () => {
+// 7. Navigation between views
+headerLogo.addEventListener('click', () => {
   mainContent.style.display = 'none';
   homeView.style.display = 'block';
+  subheader.classList.add('hidden');
 });
 
 backButton.addEventListener('click', () => {
   homeView.style.display = 'none';
   mainContent.style.display = 'flex';
+  subheader.classList.remove('hidden');
 });
