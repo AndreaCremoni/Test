@@ -100,6 +100,10 @@ const bookHistoryEvents = [
 
 const timelineBar = document.getElementById('timeline-bar');
 const articleArea = document.getElementById('article-area');
+const headerTitle = document.querySelector('.header-title');
+const mainContent = document.querySelector('.main-content');
+const homeView = document.getElementById('home-view');
+const backButton = document.getElementById('back-button');
 
 // 1. Render Elements Dynamically
 function renderLayout() {
@@ -141,93 +145,91 @@ function renderLayout() {
     `;
     articleArea.appendChild(card);
   });
+
+  setupTimelineInteractions();
 }
 
 renderLayout();
 
-// Catch references to newly rendered elements
-const lines = Array.from(document.querySelectorAll('.timeline-line'));
-const articles = Array.from(document.querySelectorAll('.article-card'));
+// Setup timeline interactions
+function setupTimelineInteractions() {
+  const lines = Array.from(document.querySelectorAll('.timeline-line'));
+  const articles = Array.from(document.querySelectorAll('.article-card'));
 
-// Collapse timeout ID for debouncing
-let collapseTimeoutId = null;
+  let collapseTimeoutId = null;
 
-// 2. Interactive "Peak" Magnifying Hover Effect on Sibling Lines with 800ms delay
-lines.forEach((line, index) => {
-  line.addEventListener('mouseenter', () => {
-    // Clear any pending collapse
-    if (collapseTimeoutId) {
-      clearTimeout(collapseTimeoutId);
-      collapseTimeoutId = null;
-    }
+  // 2. Interactive "Peak" Magnifying Hover Effect
+  lines.forEach((line, index) => {
+    line.addEventListener('mouseenter', () => {
+      if (collapseTimeoutId) {
+        clearTimeout(collapseTimeoutId);
+        collapseTimeoutId = null;
+      }
 
-    // Clear existing hover classes
-    lines.forEach(l => l.classList.remove('hovered', 'hovered-above', 'hovered-below', 'hovered-near'));
-    
-    // Apply current peak heights
-    line.classList.add('hovered');
-    
-    if (index > 0) lines[index - 1].classList.add('hovered-above');
-    if (index < lines.length - 1) lines[index + 1].classList.add('hovered-below');
-    
-    if (index > 1) lines[index - 2].classList.add('hovered-near');
-    if (index < lines.length - 2) lines[index + 2].classList.add('hovered-near');
-  });
-
-  line.addEventListener('mouseleave', () => {
-    // Delay the collapse by 800ms to allow continuous interaction
-    collapseTimeoutId = setTimeout(() => {
       lines.forEach(l => l.classList.remove('hovered', 'hovered-above', 'hovered-below', 'hovered-near'));
-    }, 800);
-  });
-
-  // Clicking a timeline line scrolls smoothly to the article
-  line.addEventListener('click', () => {
-    const targetId = line.getAttribute('data-target');
-    const targetArticle = document.getElementById(targetId);
-    if (targetArticle) {
-      targetArticle.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  });
-});
-
-// 3. Continuous Scroll Sync (Intersection Observer)
-const observerOptions = {
-  root: articleArea,
-  rootMargin: '-30% 0px -50% 0px',
-  threshold: 0
-};
-
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const activeId = entry.target.id;
       
-      lines.forEach(line => {
-        if (line.getAttribute('data-target') === activeId) {
-          line.classList.add('active');
-        } else {
-          line.classList.remove('active');
-        }
-      });
-    }
-  });
-}, observerOptions);
+      line.classList.add('hovered');
+      
+      if (index > 0) lines[index - 1].classList.add('hovered-above');
+      if (index < lines.length - 1) lines[index + 1].classList.add('hovered-below');
+      
+      if (index > 1) lines[index - 2].classList.add('hovered-near');
+      if (index < lines.length - 2) lines[index + 2].classList.add('hovered-near');
+    });
 
-articles.forEach(article => observer.observe(article));
+    line.addEventListener('mouseleave', () => {
+      collapseTimeoutId = setTimeout(() => {
+        lines.forEach(l => l.classList.remove('hovered', 'hovered-above', 'hovered-below', 'hovered-near'));
+      }, 800);
+    });
+
+    line.addEventListener('click', () => {
+      const targetId = line.getAttribute('data-target');
+      const targetArticle = document.getElementById(targetId);
+      if (targetArticle) {
+        targetArticle.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  // 3. Continuous Scroll Sync
+  const observerOptions = {
+    root: articleArea,
+    rootMargin: '-30% 0px -50% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const activeId = entry.target.id;
+        
+        lines.forEach(line => {
+          if (line.getAttribute('data-target') === activeId) {
+            line.classList.add('active');
+          } else {
+            line.classList.remove('active');
+          }
+        });
+      }
+    });
+  }, observerOptions);
+
+  articles.forEach(article => observer.observe(article));
+}
 
 // 4. Filtering System
 const filterButtons = document.querySelectorAll('.filter-btn');
 
 filterButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    // Update active class on button
     filterButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
     const filterVal = btn.getAttribute('data-filter');
+    const lines = Array.from(document.querySelectorAll('.timeline-line'));
+    const articles = Array.from(document.querySelectorAll('.article-card'));
 
-    // Filter timeline lines and articles
     let firstVisibleArticle = null;
 
     articles.forEach((art, index) => {
@@ -247,9 +249,19 @@ filterButtons.forEach(btn => {
       }
     });
 
-    // Automatically scroll to the first match in the selected category
     if (firstVisibleArticle) {
       firstVisibleArticle.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   });
+});
+
+// 5. Navigation between views
+headerTitle.addEventListener('click', () => {
+  mainContent.style.display = 'none';
+  homeView.style.display = 'block';
+});
+
+backButton.addEventListener('click', () => {
+  homeView.style.display = 'none';
+  mainContent.style.display = 'flex';
 });
