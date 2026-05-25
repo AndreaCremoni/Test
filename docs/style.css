@@ -1,0 +1,292 @@
+/* Base Layout & Palette */
+html, body {
+  background-color: #e8f4f8;
+  margin: 0;
+  padding: 0;
+  font-family: 'Georgia', serif;
+  color: #1a3038;
+  height: 100vh;
+  overflow: hidden; /* Prevent body scroll, layout uses internal scrolling */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Header */
+.top-header {
+  background-color: #ffffff;
+  padding: 20px 40px;
+  border-bottom: 1px solid #c0d6df;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  z-index: 30;
+}
+
+.header-title {
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: #112229;
+  margin: 0;
+}
+
+.header-filters {
+  display: flex;
+  gap: 6px;
+}
+
+/* Main Content Container */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar & Header Panel */
+.sidebar {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 340px;
+  height: 100%;
+  padding: 40px 20px 40px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 10;
+  pointer-events: none; /* Let clicks pass through empty spaces */
+  background-color: #cce5ed;
+}
+
+.editorial-header {
+  pointer-events: auto; /* Re-enable clicks for buttons */
+}
+
+.pub-meta {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #5b7b8a;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.editorial-header h1 {
+  font-size: 2.2rem;
+  margin: 0 0 10px 0;
+  line-height: 1.1;
+  font-weight: normal;
+  color: #112229;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4a6572;
+  margin: 0 0 24px 0;
+}
+
+/* Filters (Hidden from sidebar, moved to header) */
+.filter-container {
+  display: none;
+}
+
+.filter-label {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #5b7b8a;
+  font-weight: bold;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter-btn {
+  background: transparent;
+  border: 1px solid #c0d6df;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #4a6572;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background-color: #d8eaf0;
+  color: #1a3038;
+}
+
+.filter-btn.active {
+  background-color: #5b7b8a;
+  color: #ffffff;
+  border-color: #5b7b8a;
+}
+
+/* Timeline Mechanism (The Comb) */
+.timeline-bar {
+  position: fixed;
+  left: 60px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: auto;
+  z-index: 20;
+}
+
+.timeline-line {
+  width: 30px;
+  height: 2px;
+  margin: 3px 0; /* Creates the 6px gap (3px top + 3px bottom) */
+  background-color: #ffffff;
+  cursor: pointer;
+  position: relative;
+  transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              background-color 0.3s, 
+              opacity 0.4s ease, 
+              transform 0.4s ease;
+}
+
+/* Peak Magnifying Effect & Colors */
+.timeline-line.hovered {
+  width: 200px;
+  background-color: #ffffff;
+}
+
+.timeline-line.hovered-above,
+.timeline-line.hovered-below {
+  width: 120px;
+  background-color: #ffffff;
+}
+
+.timeline-line.hovered-near {
+  width: 70px;
+  background-color: #ffffff;
+}
+
+/* Active State from Scroll */
+.timeline-line.active {
+  background-color: #a83232; /* Distinct deep red accent for focus */
+  width: 150px;
+}
+
+/* Date and Summary Labels */
+.timeline-line .label {
+  position: absolute;
+  left: calc(100% + 15px);
+  top: -8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  color: #112229;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-line .label .label-date {
+  color: #a83232;
+}
+
+.timeline-line.hovered .label,
+.timeline-line.active .label {
+  opacity: 1;
+}
+
+/* Dimming filtered-out items */
+.timeline-line.filtered-out {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Article Area on the Right */
+.article-area {
+  margin-left: 0;
+  width: calc(100% - 340px);
+  height: 100%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  padding: 40px 10% 200px 5%;
+  box-sizing: border-box;
+  background-color: #e8f4f8;
+}
+
+/* Article Card Design */
+.article-card {
+  max-width: 650px;
+  margin-bottom: 150px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease, transform 0.5s ease, filter 0.5s ease;
+}
+
+.article-card.filtered-out {
+  opacity: 0.1;
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.card-meta {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #a83232;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.card-tag {
+  background: #d8eaf0;
+  color: #4a6572;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.article-card h2 {
+  font-family: 'Georgia', serif;
+  font-size: 2.2rem;
+  font-weight: normal;
+  margin: 0 0 16px 0;
+  color: #112229;
+  line-height: 1.2;
+}
+
+.article-card p {
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: #2b3e46;
+  margin: 0;
+}
+
+/* Scrollbar Tweaks */
+.article-area::-webkit-scrollbar {
+  width: 6px;
+}
+.article-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.article-area::-webkit-scrollbar-thumb {
+  background: #c0d6df;
+  border-radius: 3px;
+}
