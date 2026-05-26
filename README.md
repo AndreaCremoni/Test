@@ -1,12 +1,11 @@
-# The Printed Book - Chronological Journal
+## MasterPost - La guerra d'Iran
 
-A beautiful, interactive timeline of the history of the printed book, from clay tablets to digital ink.
+Lista pagine create:
+- Articolo d'esempio con aggiunto il pulsante per il MasterPost
+- Masterpost
+- Home (cliccando "Il Post" nel Masterpost)
 
-## Features
-- Interactive timeline with smooth scrolling
-- Filter by theme (Technology, Cultural Impact, Business)
-- Synchronized scroll indicators
-- Responsive design
+Lista d'articoli per masterpost: 
 
 ## View Live
-Visit: https://andrecremoni.github.io/Test/
+Visit: https://andreacremoni.github.io/Test/
