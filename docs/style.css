@@ -268,7 +268,7 @@ html:has(#initial-cover:not(.fade-out)) .home-view {
 .cover-timeline-wrapper {
   width: 60%;                    
   justify-self: end;             /* AGGIUNTO: Calamita la timeline verso il centro pagina */
-  margin-right: 60px;
+  margin-right: 100px;
   display: flex;
   align-items: center;
   height: 90px;
