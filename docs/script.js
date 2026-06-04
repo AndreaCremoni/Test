@@ -278,7 +278,7 @@ function scrollToMain() {
       mainLines.forEach((line) => {
          const lineRect = line.getBoundingClientRect(); // rettangolo della SINGOLA LINEA, non del container
            const computedStyle = window.getComputedStyle(line);
-   
+  
            // Estraiamo lo spessore finale (es. 2px o 5px)
            const finalHeight = parseFloat(computedStyle.height) || 2; 
 
@@ -541,6 +541,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const coverBar = document.querySelector('.cover-timeline-bar');
       const tBar = document.getElementById('timeline-bar');
       
+      
 
       // 1. Mostra la sezione della copertina reale (quella con la timeline)
       if (coverSection) {
@@ -583,17 +584,13 @@ document.addEventListener("DOMContentLoaded", () => {
         updateTimelineIndicator(); // Sposta l'indicatore rosso/arancione sulla prima tacca a sinistra
       }
 
-      // 8. Riporta la pagina in cima istantaneamente per mostrare la copertina corretta
+      // 8. Riporta la pagina in cima istantaneamente per mostrare la copertina corretta + DOPO 0.5 SECONDI preme il filtro per tutti gli articoli 
       window.scrollTo({ top: 0, behavior: 'auto' });
 
-      // SOLUZIONE 2: Attiva il filtro "Tutti gli articoli" senza scroll aggiuntivo
-      setTimeout(() => {
+       setTimeout(() => {
         const allFilterBtn = document.querySelector('.filter-btn[data-filter="all"]');
-        if (allFilterBtn && !allFilterBtn.classList.contains('active')) {
-          // Simula click sul filtro "Tutti gli articoli" per mostrare tutti gli articoli
-          allFilterBtn.click();
-        }
-      }, 100); // Ritardo minimo per evitare interferenze col scroll
+        
+      }, 500);
     });
   }
 });
